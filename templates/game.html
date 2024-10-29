@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Game</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style-game.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div id="timer-selection">
+        <h2>Select Game Duration</h2>
+        <button onclick="initializeCountdown(60)">1 Minute</button>
+        <button onclick="initializeCountdown(120)">2 Minutes</button>
+        <button onclick="initializeCountdown(180)">3 Minutes</button>
+        <button onclick="initializeCountdown(240)">4 Minutes</button>
+        <button onclick="initializeCountdown(300)">5 Minutes</button>
+      </div>
+
+      <div id="pre-game-countdown" style="display: none">
+        <h2>Game starting in <span id="countdown">3</span> seconds</h2>
+      </div>
+
+      <div id="game-screen" style="display: none">
+        <div class="info">
+          <h3>Time Remaining: <span id="time-remaining">0</span> s</h3>
+          <h3>Current Score: <span id="score">0</span></h3>
+          <h3>Highest Score: <span id="highest-score">0</span></h3>
+        </div>
+
+        <div class="math-problem">
+          <div class="math-grid">
+            <div class="grid-box"></div>
+            <div class="grid-box number" id="number1">27</div>
+            <div class="grid-box operator">+</div>
+            <div class="grid-box number" id="number2">19</div>
+            <div class="grid-box"></div>
+            <div class="grid-box number">
+              <input
+                type="number"
+                id="user-answer"
+                class="user-input"
+                oninput="checkAnswer()"
+                autofocus
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="result-screen" style="display: none">
+        <h2>Game Over!</h2>
+        <p>Your total score is: <span id="final-score">0</span></p>
+        <button onclick="restartGame()">Play Again</button>
+      </div>
+
+      <button class="back">
+        <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+      </button>
+    </div>
+
+    <script>
+      let timeRemaining;
+      let score = 0;
+      let highestScore = {{ high_score | tojson }};
+      let timerInterval;
+      let countdownInterval;
+      let number1, number2;
+
+      document.getElementById("highest-score").innerText = highestScore;
+
+      function updateHighScore(score) {
+          fetch('/update_score', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ score: score }),
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.status === "success") {
+                  console.log("High score updated:", data.new_high_score);
+              }
+          })
+          .catch(error => {
+              console.error('Error updating high score:', error);
+          });
+      }
+
+
+      function initializeCountdown(duration) {
+        document.getElementById("timer-selection").style.display = "none";
+        document.getElementById("pre-game-countdown").style.display = "block";
+
+        let countdown = 3;
+        document.getElementById("countdown").innerText = countdown;
+
+        countdownInterval = setInterval(() => {
+          countdown--;
+          document.getElementById("countdown").innerText = countdown;
+
+          if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("pre-game-countdown").style.display = "none";
+            startGame(duration);
+          }
+        }, 1000);
+      }
+
+      function startGame(duration) {
+        timeRemaining = duration;
+        score = 0;
+        document.getElementById("score").innerText = score;
+        document.getElementById("time-remaining").innerText = timeRemaining;
+
+        document.getElementById("game-screen").style.display = "block";
+        generateProblem();
+
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          document.getElementById("time-remaining").innerText = timeRemaining;
+
+          if (timeRemaining <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function generateProblem() {
+        number1 = Math.floor(Math.random() * 90) + 10;
+        number2 = Math.floor(Math.random() * 90) + 10;
+
+        document.getElementById("number1").innerText = number1;
+        document.getElementById("number2").innerText = number2;
+        document.getElementById("user-answer").value = '';
+        document.getElementById("user-answer").focus();
+      }
+
+      function checkAnswer() {
+        const userAnswer = parseInt(document.getElementById("user-answer").value);
+
+        if (userAnswer === number1 + number2) {
+          score++;
+          document.getElementById("score").innerText = score;
+          generateProblem();
+        }
+      }
+
+      function endGame() {
+          clearInterval(timerInterval);
+
+          if (score > highestScore) {
+            highestScore = score;
+            document.getElementById("highest-score").innerText = highestScore;
+            updateHighScore(highestScore);
+          }
+
+          document.getElementById("game-screen").style.display = "none";
+          document.getElementById("result-screen").style.display = "block";
+          document.getElementById("final-score").innerText = score;
+        }
+
+
+      function restartGame() {
+        document.getElementById("timer-selection").style.display = "block";
+        document.getElementById("game-screen").style.display = "none";
+        document.getElementById("result-screen").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

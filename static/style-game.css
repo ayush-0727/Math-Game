@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    text-align: center;
+  }
+  
+  h2, h3 {
+    color: #333;
+  }
+  
+  .info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  
+  .math-problem {
+    text-align: center;
+    font-size: 6em;
+    margin-top: 20px;
+    font-weight: 500;
+  }
+  
+  .user-input {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 22px;
+    width: 100%;
+  }
+  
+  .user-input::-webkit-outer-spin-button,
+  .user-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .math-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    width: 200px;
+    margin: 0 auto;
+  }
+  
+  .grid-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    height: 105px;
+  }
+  
+  .operator {
+    font-size: 1em;
+    justify-content: right;
+  }
+  
+  .number {
+    font-size: 1em;
+  }
+
+  #game-screen{
+    width: 100vw;
+  }
+  
+  #time-remaining{
+    font-size: 1.5em;
+    color: rgb(129, 23, 23);
+    background-color: yellow;
+  }
+
+  .back{
+    margin-top: 30px;
+  }

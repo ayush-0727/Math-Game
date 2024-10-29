@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <title>Sign Up</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-container">
+        <h1>Making Math a Sport!</h1>
+        <h2>Show the Mathematician in you</h2>
+        <h1>Login</h1>
+        <form method="POST">
+
+          <label for="username">Username:</label>
+                <input type="text" name="username"  required>
+            <br>
+          <label for="password">Password:</label>
+                <input type="password" name="password" required>
+                
+                <button type="submit" value="Login">Login</button>
+        </form>
+        <p>
+          Don't have an account?
+          <a href="{{ url_for('register') }}">Register here</a>.
+        </p>
+      </div>
+      <div class="video-container">
+        <video autoplay muted loop>
+            <source src="{{ url_for('static', filename='background.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+    </div>
+  </body>
+</html>
